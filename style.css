@@ -388,7 +388,6 @@ iframe {
 
 .symbol-type {
   display          : flex;
-  gap              : 1rem;
   font-size        : 16px;
 }
 
