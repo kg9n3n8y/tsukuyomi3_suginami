@@ -1,0 +1,462 @@
+body {
+  background-color : #E1DAC3;
+  font-size        : 23px;
+  font-family      : "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+}
+h1 {
+  color            : #333333;
+  font-size        : 28px;
+  margin    : 0;
+}
+p{
+  margin           : 10px auto ;
+}
+
+.controls {
+  display          : flex;
+  gap              : 0.5rem;
+  justify-content  : flex-start;
+  align-items      : center;
+  flex-wrap        : wrap;
+  margin           : 10px 0;
+}
+
+.control-button,
+.primary-button,
+.secondary-button {
+  font-size        : 18px;
+  padding          : 0.5rem;
+  border-radius    : 0.3rem;
+  border           : 2px solid #336633;
+  cursor           : pointer;
+  font-family      : inherit;
+  transition       : background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.control-button,
+.primary-button {
+  background-color : #336633;
+  color            : #FFFFFF;
+}
+
+.secondary-button {
+  background-color : #FFFFFF;
+  color            : #336633;
+}
+
+.control-button:hover,
+.primary-button:hover {
+  background-color : #264a26;
+}
+
+.secondary-button:hover {
+  background-color : #dfe9df;
+}
+
+.control-button:disabled,
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity          : 0.6;
+  cursor           : not-allowed;
+}
+
+#status-bar {
+  text-align       : left;
+  font-size        : 18px;
+  color            : #333333;
+  margin           : 10px 0 0 0;
+}
+
+table {
+  border           : none;
+  padding          : 0;
+  writing-mode     : vertical-rl;
+}
+td {
+  background-color : #FFFFFF;
+  border-color     : #336633;
+  border-width     : 0.3rem;
+  border-style     : solid;
+  border-radius    : 0.3rem;
+  height           : 400px;
+  width            : 135px;
+  padding          : 0;
+  line-height      : 3rem;
+  position         : relative;
+  font-family      : "Hiragino Maru Gothic ProN", "Meiryo", sans-serif;
+}
+label {
+  display          : block;
+  padding          : 1rem 0.8rem 0.5rem 0.8rem;
+}
+iframe {
+  border           : 0;
+}
+.num{
+  font-size        : 1rem;
+  position         : absolute;
+  right            : 0.5rem;
+  bottom           : -0.3rem;
+  writing-mode     : horizontal-tb;
+}
+
+.manual-addition::after {
+  content          : "空";
+  position         : absolute;
+  top              : 0.2rem;
+  left             : 0.3rem;
+  font-size        : 1.2rem;
+  color            : #3aa6d0;
+  writing-mode     : horizontal-tb;
+}
+
+.manual-addition {
+  border-color     : #3aa6d0;
+}
+
+
+/* ここからタイマー用 */
+.float-buttons {
+  position         : absolute;
+  top              : 443px;
+  left             : 158px;
+  flex-direction   : column;
+  gap              : 10px;
+}
+
+.float-button {
+  width            : 90px;
+  height           : 90px;
+  border-radius    : 50%;
+  border           : none;
+  background-color : #ffffff;
+  color            : #000000;
+  font-size        : 20px;
+  cursor           : pointer;
+  position         : relative;
+  overflow         : hidden;
+  font-weight      : bold;
+  box-shadow       : 2px 2px 4px gray;
+  transition       : opacity 0.3s ease-out;
+}
+
+.float-button.hidden {
+  opacity: 0;
+  display: none;
+}
+
+.button-text {
+  position         : relative;
+  z-index          : 2;
+}
+
+.yoin {
+  color: #336633;
+}
+
+.ma {
+  color: #ff6600;
+}
+
+.circle-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-progress circle,
+.circle-progress .quarter-circle {
+  fill: none;
+  stroke: #336633;
+  stroke-width: 8;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+#middle-button .circle-progress .main-circle {
+  stroke: #336633;
+  stroke-dasharray: -212;
+}
+
+#middle-button .circle-progress .quarter-circle {
+  stroke: #ff6600;
+  stroke-dasharray: 71;
+}
+
+@keyframes disappear {
+  to {
+      stroke-dashoffset: 283;
+  }
+}
+
+@keyframes disappear-quarter {
+  to {
+      stroke-dashoffset: 71;
+  }
+}
+
+@keyframes disappear-main {
+  to {
+      stroke-dashoffset: 283;
+  }
+}
+
+
+/* モーダル関連 */
+.hidden {
+  display          : none !important;
+}
+
+.modal,
+.sub-modal {
+  position         : fixed;
+  top              : 0;
+  left             : 0;
+  width            : 100%;
+  height           : 100%;
+  display          : flex;
+  align-items      : center;
+  justify-content  : center;
+  z-index          : 1000;
+}
+
+.modal-backdrop {
+  position         : absolute;
+  top              : 0;
+  left             : 0;
+  width            : 100%;
+  height           : 100%;
+  background-color : rgba(0, 0, 0, 0.4);
+}
+
+.modal-content,
+.sub-modal-content {
+  position         : relative;
+  background-color : #ffffff;
+  border-radius    : 0.5rem;
+  padding          : 0.75rem 1.25rem;
+  max-height       : min(calc(100vh - 2rem), 720px);
+  overflow-x       : hidden;
+  overflow-y       : auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow       : 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+  width            : min(800px, 90vw);
+  display          : flex;
+  flex-direction   : column;
+}
+
+.sub-modal-content {
+  width            : min(500px, 90vw);
+  display          : flex;
+  flex-direction   : column;
+}
+
+.modal-header {
+  display          : flex;
+  justify-content  : space-between;
+  align-items      : center;
+  margin-bottom    : 0.5rem;
+}
+
+.modal-header h2 {
+  font-size        : 20px;
+  margin           : 0;
+}
+
+.modal-close-button {
+  background       : none;
+  border           : none;
+  font-size        : 24px;
+  cursor           : pointer;
+  color            : #333333;
+}
+
+.modal-body {
+  overflow-y       : auto;
+  padding-right    : 0.25rem;
+  flex             : 1 1 auto;
+  min-height       : 0;
+  display          : flex;
+  flex-direction   : column;
+  gap              : 0.75rem;
+}
+
+.modal-section {
+  display          : flex;
+  flex-direction   : column;
+  gap              : 0.4rem;
+}
+
+.modal-section .secondary-button {
+  align-self       : flex-start;
+}
+
+.random-add-section {
+  border-top       : 1px solid #dddddd;
+  border-bottom    : 1px solid #dddddd;
+  padding-top      : 0.5rem;
+  padding-bottom   : 0.5rem;
+  gap              : 0.35rem;
+}
+.random-add-section.embedded {
+  border-top       : none;
+  border-bottom    : none;
+  padding-top      : 0.6rem;
+}
+
+.random-add-title {
+  display          : block;
+  font-size        : 16px;
+  font-weight      : 600;
+  color            : #333333;
+  margin           : 0;
+  line-height      : 1.4;
+}
+
+.random-add-controls {
+  display          : flex;
+  align-items      : center;
+  gap              : 0.4rem;
+}
+
+.random-add-controls input[type="number"] {
+  width            : 80px;
+  padding          : 0.25rem 0.3rem;
+  font-size        : 15px;
+  border           : 1px solid #cccccc;
+  border-radius    : 0.3rem;
+}
+
+.helper-text {
+  font-size        : 14px;
+  color            : #666666;
+  margin           : 0;
+}
+
+.card-list {
+  display          : grid;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap              : 0.3rem;
+  max-height       : 45vh;
+  overflow-y       : auto;
+  padding-right    : 0.25rem;
+}
+
+.card-item {
+  display          : flex;
+  flex-direction   : column;
+  align-items      : flex-start;
+  justify-content  : center;
+  gap              : 0.15rem;
+  border           : 1px solid #cccccc;
+  border-radius    : 0.25rem;
+  padding          : 0.25rem 0.3rem;
+  background-color : #ffffff;
+  cursor           : pointer;
+  transition       : background-color 0.2s ease, border-color 0.2s ease;
+  min-height       : 36px;
+}
+
+.card-item.selected {
+  background-color : #dfe9df;
+  border-color     : #336633;
+}
+
+.card-item .card-kimariji {
+  font-size        : 14px;
+  color            : #555555;
+}
+
+.card-item .card-manual {
+  font-size        : 12px;
+  color            : #3aa6d0;
+}
+
+.modal-footer {
+  display          : flex;
+  justify-content  : flex-end;
+  gap              : 0.5rem;
+  margin-top       : 0.75rem;
+}
+
+.symbol-type {
+  display          : flex;
+  gap              : 1rem;
+  font-size        : 16px;
+}
+
+.symbol-buttons,
+.initial-buttons {
+  display          : flex;
+  flex-wrap        : wrap;
+  gap              : 0.5rem;
+  margin-top       : 0.5rem;
+}
+
+.symbol-button,
+.initial-button {
+  min-width        : 48px;
+  padding          : 0.4rem 0.6rem;
+  font-size        : 18px;
+  text-align       : center;
+  border           : 1px solid #336633;
+  border-radius    : 0.3rem;
+  background-color : #ffffff;
+  cursor           : pointer;
+  transition       : background-color 0.2s ease, color 0.2s ease;
+}
+
+.symbol-button.selected,
+.initial-button.selected {
+  background-color : #336633;
+  color            : #ffffff;
+}
+
+@media (max-width: 600px) {
+  .modal,
+  .sub-modal {
+      align-items      : flex-start;
+      justify-content  : center;
+      padding          : 1.25rem 0.75rem;
+  }
+
+  .modal-content,
+  .sub-modal-content {
+      width            : 100%;
+      max-width        : none;
+      border-radius    : 0.4rem;
+  }
+
+  .modal-body {
+      padding-right    : 0;
+  }
+
+  .card-list {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .control-button,
+  .primary-button,
+  .secondary-button {
+      font-size    : 16px;
+  }
+}
+
+.button-row {
+  display          : flex;
+  gap              : 0.5rem;
+  flex-wrap        : wrap;
+}
+
+.selected-count-indicator {
+  font-size        : 14px;
+  color            : #333333;
+  margin           : 0.2rem 0 0 0;
+}

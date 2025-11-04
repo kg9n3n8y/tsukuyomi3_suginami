@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta property="og:title" content="【読み札アプリ】月読（ver.3）杉並版">
+    <meta property="og:description" content="競技かるたの読み札を表示（改良版）杉並版">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kg9n3n8y.github.io/tsukuyomi3_suginami/">
+    <meta property="og:image" content="https://kg9n3n8y.github.io/tsukuyomi3_suginami/thumbnail.png">
+    <meta property="og:site_name" content="【読み札アプリ】月読（ver.3）">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="【読み札アプリ】月読（ver.3）杉並版">
+    <meta name="twitter:description" content="競技かるたの読み札を表示（改良版）杉並版">
+    <meta name=”twitter:image” content=”https://kg9n3n8y.github.io/tsukuyomi3_suginami/thumbnail.png” />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>月読(杉並版)</title>
+    <link rel="manifest" href="manifest.json"/>
+    <link rel="shortcut icon" type="image/png" href="https://kg9n3n8y.github.io/tsukuyomi3_suginami/icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://kg9n3n8y.github.io/tsukuyomi3_suginami/icon.png">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./fudalist.js"></script>
+  </head>
+
+  <body>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          console.log('ServiceWorker registration successful.');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed.');
+        });
+      }
+    </script>
+    <h1>読札アプリ <ruby><rb>月</rb><rp>（</rp><rt>つく</rt><rp>）</rp><rb>読</rb><rp>（</rp><rt>よみ</rt><rp>）</rp></ruby> ver.3</h1>
+
+    <p class="controls">
+      <button id="open-settings-button" type="button" class="control-button">
+        使う札を設定
+      </button>
+      <button id="shuffle-button" type="button" class="control-button">
+        読み札をシャッフル
+      </button>
+    </p>
+
+    <div id="insert_table">
+      <table>
+          <tr>
+            <td id="shimonoku"></td>
+          </tr>
+          <tr>
+            <td id="kaminoku"></td>
+          </tr>
+      </table>
+    </div>
+
+    <div id="status-bar">
+      <span id="card-counter">選択数: 0枚</span>
+    </div>
+
+    <div class="float-buttons">
+      <button id="middle-button" class="float-button">
+        <span class="button-text"><span class="yoin">余韻</span><br><span class="ma">間</span></span>
+        <svg class="circle-progress" viewBox="0 0 100 100">
+            <circle class="main-circle" cx="50" cy="50" r="45"/>
+            <path class="quarter-circle" d="M 95,50 A 45,45 0 0,1 50,95"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="selection-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <h2 id="modal-title">使う札の設定</h2>
+          <button type="button" class="modal-close-button" id="close-settings-button" aria-label="設定を閉じる">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="button-row">
+              <button type="button" id="select-all-button" class="secondary-button">全てオン</button>
+              <button type="button" id="select-none-button" class="secondary-button">全てオフ</button>
+            </div>
+            <div class="button-row">
+              <button type="button" id="open-symbol-selector-button" class="secondary-button">記号で一括選択</button>
+              <button type="button" id="open-initial-selector-button" class="secondary-button">1字目で選択</button>
+            </div>
+            <p id="selected-count-indicator" class="selected-count-indicator">選択中: 0枚</p>
+          </div>
+          <div class="modal-section">
+            <div id="card-list" class="card-list" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="apply-settings-button" class="primary-button">決定・シャッフル</button>
+          <button type="button" id="cancel-settings-button" class="secondary-button">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="symbol-selector" class="sub-modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="sub-modal-content" role="dialog" aria-modal="true" aria-labelledby="symbol-selector-title">
+        <div class="modal-header">
+          <h2 id="symbol-selector-title">記号で一括選択</h2>
+          <button type="button" class="modal-close-button" id="close-symbol-selector-button" aria-label="閉じる">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="symbol-type">
+            <label><input type="radio" name="symbol-side" value="left" checked> 左側</label>
+            <label><input type="radio" name="symbol-side" value="center"> 中央</label>
+            <label><input type="radio" name="symbol-side" value="right"> 右側</label>
+          </div>
+          <p class="helper-text">選択した位置の記号から5種類を選択してください。</p>
+          <div class="symbol-buttons" id="symbol-buttons"></div>
+          <div class="modal-section random-add-section embedded">
+            <label for="symbol-random-add-count" class="random-add-title">空札をランダムに追加</label>
+            <div class="random-add-controls">
+              <input type="number" id="symbol-random-add-count" min="0" max="100" step="1" value="35">
+            </div>
+            <p class="helper-text">指定した枚数をランダムに空札として追加します。</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="apply-symbol-selection-button" class="primary-button">決定</button>
+          <button type="button" id="cancel-symbol-selection-button" class="secondary-button">戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="initial-selector" class="sub-modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="sub-modal-content" role="dialog" aria-modal="true" aria-labelledby="initial-selector-title">
+        <div class="modal-header">
+          <h2 id="initial-selector-title">1字目で一括選択</h2>
+          <button type="button" class="modal-close-button" id="close-initial-selector-button" aria-label="閉じる">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="helper-text">対象の1字目を選択してください。</p>
+          <div class="initial-buttons" id="initial-buttons"></div>
+          <div class="modal-section random-add-section embedded">
+            <label for="initial-random-add-count" class="random-add-title">空札をランダムに追加</label>
+            <div class="random-add-controls">
+              <input type="number" id="initial-random-add-count" min="0" max="100" step="1" value="0">
+            </div>
+            <p class="helper-text">指定した枚数をランダムに空札として追加します。</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="apply-initial-selection-button" class="primary-button">決定</button>
+          <button type="button" id="cancel-initial-selection-button" class="secondary-button">戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+
+</html>
