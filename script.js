@@ -235,11 +235,7 @@ function initialize() {
   }
 
   updateDisplay();
-  if (currentIndex > 0) {
-    showMiddleButton();
-  } else {
-    hideMiddleButton();
-  }
+  showMiddleButton();
   updateCardListSelectionState(selectedCardNumbers, manualAdditionNumbers);
   updateProgressIndicator();
   updateSelectedCountIndicator(selectedCardNumbers);
