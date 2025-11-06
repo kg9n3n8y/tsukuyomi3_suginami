@@ -691,6 +691,11 @@ function handleApplySettings() {
     return;
   }
 
+  const shouldShuffle = window.confirm('読み札をシャッフルしますが，いいですか？');
+  if (!shouldShuffle) {
+    return;
+  }
+
   selectedCardNumbers = new Set(draftSelection);
   manualAdditionNumbers = new Set(
     [...draftManualAdditions].filter(no => selectedCardNumbers.has(no))
