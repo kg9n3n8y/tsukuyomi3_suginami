@@ -193,6 +193,7 @@ const openSymbolSelectorButton = document.getElementById('open-symbol-selector-b
 const openInitialSelectorButton = document.getElementById('open-initial-selector-button');
 const cardListElement = document.getElementById('card-list');
 const selectedCountIndicator = document.getElementById('selected-count-indicator');
+const emptyCardCheckbox = document.getElementById('empty-card-checkbox');
 
 const symbolSelector = document.getElementById('symbol-selector');
 const closeSymbolSelectorButton = document.getElementById('close-symbol-selector-button');
@@ -519,6 +520,9 @@ function toggleCardSelection(cardNo) {
     draftManualAdditions.delete(cardNo);
   } else {
     draftSelection.add(cardNo);
+    if (isEmptyCardAdditionEnabled()) {
+      draftManualAdditions.add(cardNo);
+    }
   }
   updateCardListSelectionState(draftSelection, draftManualAdditions);
 }
@@ -803,6 +807,10 @@ function updateSelectedCountIndicator(selectionSet) {
   }
   const targetSet = selectionSet || selectedCardNumbers;
   selectedCountIndicator.textContent = `選択中: ${targetSet.size}枚`;
+}
+
+function isEmptyCardAdditionEnabled() {
+  return Boolean(emptyCardCheckbox?.checked);
 }
 
 function handleShuffleClick() {

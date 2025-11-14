@@ -454,6 +454,26 @@ iframe {
   flex-wrap        : wrap;
 }
 
+.checkbox-row {
+  margin-top       : 0.3rem;
+}
+
+.checkbox-label {
+  display          : inline-flex;
+  align-items      : center;
+  gap              : 0.4rem;
+  font-size        : 16px;
+  font-weight      : 600;
+  color            : #333333;
+  padding          : 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width            : 1.2rem;
+  height           : 1.2rem;
+  accent-color     : #336633;
+}
+
 .selected-count-indicator {
   font-size        : 14px;
   color            : #333333;
