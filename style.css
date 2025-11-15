@@ -114,6 +114,21 @@ iframe {
   border-color     : #3aa6d0;
 }
 
+.card-badge {
+  position         : absolute;
+  bottom           : 0.3rem;
+  left             : 0.35rem;
+  padding          : 0.1rem 0.35rem;
+  font-size        : 0.85rem;
+  line-height      : 1.2;
+  color            : #c62828;
+  border           : 1px solid #c62828;
+  background-color : rgba(255, 255, 255, 0.9);
+  writing-mode     : horizontal-tb;
+  pointer-events   : none;
+  z-index          : 1;
+}
+
 
 /* ここからタイマー用 */
 .float-buttons {

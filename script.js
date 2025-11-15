@@ -69,6 +69,45 @@ function addNumberTags(array) {
   });
 }
 
+function isRegularPlayableCard(card) {
+  return (
+    !!card &&
+    typeof card.no === 'number' &&
+    card.no > 0 &&
+    card.no < 101 &&
+    typeof card.initial === 'string' &&
+    card.initial.length > 0
+  );
+}
+
+function assignCardBadges(cardList) {
+  const upcomingNonEmptyInitials = new Set();
+  for (let index = cardList.length - 1; index >= 0; index -= 1) {
+    const card = cardList[index];
+    if (!card || !isRegularPlayableCard(card)) {
+      if (card) {
+        card.badgeType = null;
+      }
+      continue;
+    }
+    const initial = card.initial;
+    const hasFutureNonEmpty = upcomingNonEmptyInitials.has(initial);
+    card.badgeType = null;
+
+    if (card.isManualAddition) {
+      if (!hasFutureNonEmpty) {
+        card.badgeType = 'no-same-sound';
+      }
+      continue;
+    }
+
+    if (!hasFutureNonEmpty) {
+      card.badgeType = 'solo';
+    }
+    upcomingNonEmptyInitials.add(initial);
+  }
+}
+
 function loadState() {
   if (typeof localStorage === 'undefined') {
     return null;
@@ -748,6 +787,7 @@ function rebuildYomifudalistFromOrder(order) {
     .filter(Boolean);
 
   yomifudalist = addNumberTags([...prefix, ...cards, ...suffix]);
+  assignCardBadges(yomifudalist);
   lastPlayableIndex = Math.max(0, yomifudalist.length - 2);
 }
 
@@ -776,10 +816,11 @@ function renderCard(element, card, type) {
     return;
   }
 
-  if (type === 'shimonoku') {
-    element.innerHTML = card.shimonoku || '';
-  } else {
-    element.innerHTML = card.kaminoku || '';
+  const content = type === 'shimonoku' ? card.shimonoku : card.kaminoku;
+  element.innerHTML = content || '';
+
+  if (type === 'kaminoku') {
+    appendCardBadge(element, card);
   }
 
   if (card.isManualAddition) {
@@ -799,6 +840,35 @@ function updateProgressIndicator() {
   }
   const total = getPlayableCardCount();
   cardCounterElement.textContent = `選択数: ${total}枚`;
+}
+
+function appendCardBadge(element, card) {
+  if (!element || !card) {
+    return;
+  }
+  const label = getCardBadgeLabel(card);
+  if (!label) {
+    return;
+  }
+  const badge = document.createElement('span');
+  const modifierClass = card.badgeType ? ` card-badge--${card.badgeType}` : '';
+  badge.className = `card-badge${modifierClass}`;
+  badge.textContent = label;
+  element.appendChild(badge);
+}
+
+function getCardBadgeLabel(card) {
+  if (!card?.badgeType) {
+    return null;
+  }
+  switch (card.badgeType) {
+    case 'solo':
+      return '単独';
+    case 'no-same-sound':
+      return '同音なし';
+    default:
+      return null;
+  }
 }
 
 function updateSelectedCountIndicator(selectionSet) {
